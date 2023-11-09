@@ -125,7 +125,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 getOptionLabel={(option) => option.location}
                 getOptionSelected={(option, value) => option.id === value.id}
                 renderOption={(props, option, { selected }) => (
-                  <li>
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  <li {...props}>
                     <Checkbox
                       icon={icon}
                       checkedIcon={checkedIcon}
