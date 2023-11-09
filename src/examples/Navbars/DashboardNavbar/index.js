@@ -125,7 +125,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 getOptionLabel={(option) => option.location}
                 getOptionSelected={(option, value) => option.id === value.id}
                 renderOption={(props, option, { selected }) => (
-                  <li {...props}>
+                  <li>
                     <Checkbox
                       icon={icon}
                       checkedIcon={checkedIcon}
