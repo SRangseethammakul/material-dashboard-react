@@ -47,6 +47,8 @@ import {
   setTransparentNavbar,
   setDateMaster,
   setPlayDashboard,
+  setMachines,
+  setMachinesSelect,
 } from "context";
 
 function DashboardNavbar({ absolute, light, isMini }) {
@@ -54,12 +56,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [endDateGlobal, setEndDate] = useState(null);
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
+  const [state, setState] = useState([]);
   const { transparentNavbar, fixedNavbar, darkMode, machines } = controller;
   const route = useLocation().pathname.split("/").slice(1);
 
   const handlePlayDashboard = () => {
     setPlayDashboard(dispatch, true);
     setDateMaster(dispatch, { dateStart: startDateGlobal, dateEnd: endDateGlobal });
+  };
+
+  const handleChange = (event, values) => {
+    const map = values.map((item) => item.id);
+    setState(values);
+    setMachinesSelect(dispatch, map);
   };
 
   useEffect(() => {
@@ -112,9 +121,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 id="checkboxes-tags-demo"
                 options={machines}
                 disableCloseOnSelect
+                value={state}
                 getOptionLabel={(option) => option.location}
+                getOptionSelected={(option, value) => option.id === value.id}
                 renderOption={(props, option, { selected }) => (
-                  <li>
+                  <li {...props}>
                     <Checkbox
                       icon={icon}
                       checkedIcon={checkedIcon}
@@ -124,6 +135,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                     {option.location}
                   </li>
                 )}
+                onChange={handleChange}
                 style={{ width: 500 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Checkboxes" placeholder="Favorites" />

@@ -19,21 +19,21 @@ import Grid from "@mui/material/Grid";
 import { instance, cancel } from "../../api";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
+import Select from "@mui/material/Select";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-import { useMaterialUIController, setMachines, setPlayDashboard } from "context";
+import { useMaterialUIController, setMachines } from "context";
 
 // Dashboard components
 import DataTable from "examples/Tables/DataTable";
 
 function Dashboard() {
   const [controller, dispatch] = useMaterialUIController();
-  const { dateMaster, playDashboard } = controller;
+  const { dateMaster, machinesSelect } = controller;
   const [byWeek, setByWeek] = React.useState({});
   const [byHour, setByHour] = React.useState({});
   const [byMonth, setByMonth] = React.useState({});
@@ -42,10 +42,9 @@ function Dashboard() {
   const [count, setCount] = React.useState(0);
   const [sum, setSum] = React.useState(0);
   const fetchData = () => {
-    console.log(playDashboard);
     instance
       .get("/dashboard", {
-        params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd },
+        params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd, machinesSelect },
       })
       .then((response) => {
         setMachines(dispatch, response.data.machines);
@@ -56,7 +55,24 @@ function Dashboard() {
         setSum(response.data.getAmount);
         setByDay(response.data.sumPerDay);
         setMasterTable(response.data.masterTable.dataRawTables);
-        setMachines(dispatch, response.data.machines);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  const fetchDataWithMachine = () => {
+    instance
+      .get("/dashboard", {
+        params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd, machinesSelect },
+      })
+      .then((response) => {
+        setByWeek(response.data.getAmountWithDay);
+        setByHour(response.data.getAmountWithHour);
+        setByMonth(response.data.getAmountWithMonth);
+        setCount(response.data.getAmount.count);
+        setSum(response.data.getAmount);
+        setByDay(response.data.sumPerDay);
+        setMasterTable(response.data.masterTable.dataRawTables);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -75,6 +91,12 @@ function Dashboard() {
       cancel(); // This cancels the request when the component unmounts
     };
   }, [dateMaster]);
+  React.useEffect(() => {
+    fetchDataWithMachine();
+    return () => {
+      cancel(); // This cancels the request when the component unmounts
+    };
+  }, [machinesSelect]);
   return (
     <DashboardLayout>
       <DashboardNavbar />

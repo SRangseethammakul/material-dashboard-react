@@ -71,6 +71,9 @@ function reducer(state, action) {
     case "MACHINES": {
       return { ...state, machines: action.value };
     }
+    case "MACHINESSELECT": {
+      return { ...state, machinesSelect: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -93,6 +96,7 @@ function MaterialUIControllerProvider({ children }) {
     dateMaster: {},
     playDashboard: false,
     machines: [],
+    machinesSelect: [],
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -134,6 +138,7 @@ const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 const setDateMaster = (dispatch, value) => dispatch({ type: "DATEMASTER", value });
 const setPlayDashboard = (dispatch, value) => dispatch({ type: "PLAYDASHBOARD", value });
 const setMachines = (dispatch, value) => dispatch({ type: "MACHINES", value });
+const setMachinesSelect = (dispatch, value) => dispatch({ type: "MACHINESSELECT", value });
 
 export {
   MaterialUIControllerProvider,
@@ -151,4 +156,5 @@ export {
   setDateMaster,
   setPlayDashboard,
   setMachines,
+  setMachinesSelect,
 };
