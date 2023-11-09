@@ -17,55 +17,58 @@ import { useState, useEffect } from "react";
 
 // react-router components
 import { useLocation } from "react-router-dom";
-
+import Autocomplete from "@mui/material/Autocomplete";
 import moment from "moment";
-
+import Fab from "@mui/material/Fab";
 import "react-datepicker/dist/react-datepicker.css";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
-
+import NavigationIcon from "@mui/icons-material/Navigation";
 // @material-ui core components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import Icon from "@mui/material/Icon";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+import Checkbox from "@mui/material/Checkbox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import MDInput from "components/MDInput";
-
+import TextField from "@mui/material/TextField";
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
-import NotificationItem from "examples/Items/NotificationItem";
-import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 // Custom styles for DashboardNavbar
-import {
-  navbar,
-  navbarContainer,
-  navbarRow,
-  navbarIconButton,
-  navbarMobileMenu,
-} from "examples/Navbars/DashboardNavbar/styles";
+import { navbar, navbarContainer, navbarRow } from "examples/Navbars/DashboardNavbar/styles";
 
 // Material Dashboard 2 React context
-import { useMaterialUIController, setTransparentNavbar } from "context";
+import {
+  useMaterialUIController,
+  setTransparentNavbar,
+  setDateMaster,
+  setPlayDashboard,
+} from "context";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [startDateGlobal, setstartDate] = useState(null);
   const [endDateGlobal, setEndDate] = useState(null);
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const { transparentNavbar, fixedNavbar, darkMode } = controller;
+  const { transparentNavbar, fixedNavbar, darkMode, machines } = controller;
   const route = useLocation().pathname.split("/").slice(1);
 
-  const [age, setAge] = useState("");
+  const handlePlayDashboard = () => {
+    setPlayDashboard(dispatch, true);
+    setDateMaster(dispatch, { dateStart: startDateGlobal, dateEnd: endDateGlobal });
+  };
 
   useEffect(() => {
     const firstDate = moment().startOf("month").format("YYYY-MM-DD");
     const lastDate = moment().endOf("month").format("YYYY-MM-DD");
     setstartDate(firstDate);
     setEndDate(lastDate);
+    setDateMaster(dispatch, { dateStart: firstDate, dateEnd: lastDate });
+
     // Setting the navbar type
     if (fixedNavbar) {
       setNavbarType("sticky");
@@ -104,26 +107,57 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox pr={1}>
-              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                <InputLabel id="demo-select-small-label">Machine</InputLabel>
-                <Select
-                  labelId="demo-select-small-label"
-                  id="demo-select-small"
-                  value="all"
-                  label="Age"
-                >
-                  <MenuItem value={"all"}>All</MenuItem>
-                  <MenuItem value={"Pattaya"}>Pattaya</MenuItem>
-                  <MenuItem value={"Asiatique"}>Asiatique</MenuItem>
-                </Select>
-              </FormControl>
+              <Autocomplete
+                multiple
+                id="checkboxes-tags-demo"
+                options={machines}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.location}
+                renderOption={(props, option, { selected }) => (
+                  <li>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.location}
+                  </li>
+                )}
+                style={{ width: 500 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Checkboxes" placeholder="Favorites" />
+                )}
+              />
             </MDBox>
             <MDBox pr={1}>
-              <MDInput variant="outlined" type="date" label="Start Date" value={startDateGlobal} />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                type="date"
+                id="outlinedStartDate"
+                label="Start Date"
+                onChange={(event) => {
+                  setstartDate(event.target.value);
+                }}
+                defaultValue={startDateGlobal}
+              />
             </MDBox>
             <MDBox pr={1}>
-              <MDInput variant="outlined" type="date" label="End Date" value={endDateGlobal} />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                type="date"
+                id="outlinedEndDate"
+                label="End Date"
+                onChange={(event) => {
+                  setEndDate(event.target.value);
+                }}
+                defaultValue={endDateGlobal}
+              />
             </MDBox>
+            <Fab variant="extended" onClick={handlePlayDashboard}>
+              <NavigationIcon sx={{ mr: 1 }} />
+              Play
+            </Fab>
           </MDBox>
         )}
       </Toolbar>

@@ -62,6 +62,15 @@ function reducer(state, action) {
     case "DARKMODE": {
       return { ...state, darkMode: action.value };
     }
+    case "DATEMASTER": {
+      return { ...state, dateMaster: action.value };
+    }
+    case "PLAYDASHBOARD": {
+      return { ...state, playDashboard: action.value };
+    }
+    case "MACHINES": {
+      return { ...state, machines: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -81,6 +90,9 @@ function MaterialUIControllerProvider({ children }) {
     direction: "ltr",
     layout: "dashboard",
     darkMode: false,
+    dateMaster: {},
+    playDashboard: false,
+    machines: [],
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -119,6 +131,9 @@ const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGUR
 const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
+const setDateMaster = (dispatch, value) => dispatch({ type: "DATEMASTER", value });
+const setPlayDashboard = (dispatch, value) => dispatch({ type: "PLAYDASHBOARD", value });
+const setMachines = (dispatch, value) => dispatch({ type: "MACHINES", value });
 
 export {
   MaterialUIControllerProvider,
@@ -133,4 +148,7 @@ export {
   setDirection,
   setLayout,
   setDarkMode,
+  setDateMaster,
+  setPlayDashboard,
+  setMachines,
 };

@@ -23,48 +23,58 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
+import { useMaterialUIController, setMachines, setPlayDashboard } from "context";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import DataTable from "examples/Tables/DataTable";
 
 function Dashboard() {
+  const [controller, dispatch] = useMaterialUIController();
+  const { dateMaster, playDashboard } = controller;
   const [byWeek, setByWeek] = React.useState({});
   const [byHour, setByHour] = React.useState({});
   const [byMonth, setByMonth] = React.useState({});
+  const [byDay, setByDay] = React.useState({});
+  const [masterTable, setMasterTable] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const [sum, setSum] = React.useState(0);
   const fetchData = () => {
+    console.log(playDashboard);
     instance
-      .get("/dashboard")
+      .get("/dashboard", {
+        params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd },
+      })
       .then((response) => {
+        setMachines(dispatch, response.data.machines);
         setByWeek(response.data.getAmountWithDay);
         setByHour(response.data.getAmountWithHour);
         setByMonth(response.data.getAmountWithMonth);
         setCount(response.data.getAmount.count);
-        setSum(response.data.getAmount.totalInvoiceAmount);
-        console.log("Data from Axios:", response.data);
+        setSum(response.data.getAmount);
+        setByDay(response.data.sumPerDay);
+        setMasterTable(response.data.masterTable.dataRawTables);
+        setMachines(dispatch, response.data.machines);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
+  React.useEffect(() => {
+    fetchData();
 
-  const { sales, tasks } = reportsLineChartData;
+    return () => {
+      cancel(); // This cancels the request when the component unmounts
+    };
+  }, []);
   React.useEffect(() => {
     fetchData();
     return () => {
       cancel(); // This cancels the request when the component unmounts
     };
-  }, []);
+  }, [dateMaster]);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -72,7 +82,11 @@ function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard icon="leaderboard" title="Income" count={sum} />
+              <ComplexStatisticsCard
+                icon="leaderboard"
+                title="Income"
+                count={sum.totalInvoiceAmount}
+              />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
@@ -80,8 +94,28 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Total used"
+                title="Total Print"
                 count={count}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="warning"
+                icon="assistant_photo"
+                title="Fee"
+                count={sum.totalInvoiceAmountFee}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="dark"
+                icon="attach_money"
+                title="Net Income"
+                count={sum.totalInvoiceAmountNet}
               />
             </MDBox>
           </Grid>
@@ -120,6 +154,32 @@ function Dashboard() {
                   chart={byMonth}
                 />
               </MDBox>
+            </Grid>
+            <Grid item xs={12} md={12} lg={6}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="primary"
+                  title="Show By Day"
+                  description="Show By Day"
+                  date="just updated"
+                  chart={byDay}
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={4.5}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={12}>
+              <DataTable
+                table={{
+                  columns: [
+                    { Header: "location", accessor: "location", width: "25%" },
+                    { Header: "totalAmount", accessor: "totalAmount", width: "30%" },
+                  ],
+                  rows: masterTable,
+                }}
+              />
             </Grid>
           </Grid>
         </MDBox>
