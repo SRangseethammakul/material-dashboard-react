@@ -144,17 +144,21 @@ function Dashboard() {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={12} lg={6}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Show By Week"
-                  description="Show By Week"
-                  date="campaign sent 2 days ago"
-                  chart={byWeek}
-                />
-              </MDBox>
+            <Grid item xs={12} md={12} lg={12}>
+              <DataTable
+                table={{
+                  columns: [
+                    { Header: "location", accessor: "location", width: "25%" },
+                    { Header: "totalAmount", accessor: "totalAmount", width: "30%" },
+                  ],
+                  rows: masterTable,
+                }}
+              />
             </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={4.5}>
+          <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
@@ -169,17 +173,6 @@ function Dashboard() {
             <Grid item xs={12} md={12} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
-                  color="dark"
-                  title="Show By Month"
-                  description="Show By Month"
-                  date="just updated"
-                  chart={byMonth}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={12} lg={6}>
-              <MDBox mb={3}>
-                <ReportsLineChart
                   color="primary"
                   title="Show By Day"
                   description="Show By Day"
@@ -188,20 +181,28 @@ function Dashboard() {
                 />
               </MDBox>
             </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox mt={4.5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={12} lg={12}>
-              <DataTable
-                table={{
-                  columns: [
-                    { Header: "location", accessor: "location", width: "25%" },
-                    { Header: "totalAmount", accessor: "totalAmount", width: "30%" },
-                  ],
-                  rows: masterTable,
-                }}
-              />
+            <Grid item xs={12} md={12} lg={6}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="info"
+                  title="Show By Week"
+                  description="Show By Week"
+                  date="campaign sent 2 days ago"
+                  chart={byWeek}
+                />
+              </MDBox>
+            </Grid>
+
+            <Grid item xs={12} md={12} lg={6}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="dark"
+                  title="Show By Month"
+                  description="Show By Month"
+                  date="just updated"
+                  chart={byMonth}
+                />
+              </MDBox>
             </Grid>
           </Grid>
         </MDBox>
