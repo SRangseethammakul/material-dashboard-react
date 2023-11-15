@@ -148,8 +148,9 @@ function Dashboard() {
               <DataTable
                 table={{
                   columns: [
-                    { Header: "location", accessor: "location", width: "25%" },
-                    { Header: "totalAmount", accessor: "totalAmount", width: "30%" },
+                    { Header: "Location", accessor: "location", width: "25%" },
+                    { Header: "Total Amount", accessor: "totalAmount", width: "30%" },
+                    { Header: "Printer Status", accessor: "printerStatus", width: "30%" },
                   ],
                   rows: masterTable,
                 }}
