@@ -14,10 +14,9 @@ Coded by www.creative-tim.com
 */
 
 // @mui material components
-import React from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import { instance, cancel } from "../../api";
+import React from "react";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -25,15 +24,24 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
+import { instance, cancel } from "../../api";
+// Data
+import authorsTableData from "layouts/tables/data/authorsTableData";
+import projectsTableData from "layouts/tables/data/projectsTableData";
 
 function Tables() {
-  const [masterTable, setMasterTable] = React.useState([]);
+  const { columns, rows } = authorsTableData();
+  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const [companyTable, setCompanyTable] = React.useState([]);
+  const [userTable, setUsers] = React.useState([]);
   const fetchData = () => {
     instance
-      .get("/transaction/getDeposit")
+      .get("/users/list")
       .then((response) => {
-        setMasterTable(response.data);
+        setCompanyTable(response.data.companies);
+        setUsers(response.data.users);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -63,20 +71,46 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Deposit Table
+                  User Table
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
                   table={{
                     columns: [
-                      { Header: "createdDate", accessor: "createdDate", width: "25%" },
-                      { Header: "From", accessor: "machineLocation", width: "30%" },
-                      { Header: "TRANSACTION ID", accessor: "refId", width: "30%" },
-                      { Header: "STATUS", accessor: "status", width: "30%" },
-                      { Header: "AMOUNT", accessor: "amount", width: "30%" },
+                      { Header: "internal Id", accessor: "internalId", width: "25%" },
+                      { Header: "user name", accessor: "username", width: "30%" },
                     ],
-                    rows: masterTable,
+                    rows: userTable,
+                  }}
+                />
+              </MDBox>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="success"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Company Table
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "internal Id", accessor: "internalId", width: "25%" },
+                      { Header: "company Name", accessor: "companyName", width: "30%" },
+                    ],
+                    rows: companyTable,
                   }}
                 />
               </MDBox>

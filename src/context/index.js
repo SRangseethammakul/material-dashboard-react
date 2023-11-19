@@ -74,6 +74,9 @@ function reducer(state, action) {
     case "MACHINESSELECT": {
       return { ...state, machinesSelect: action.value };
     }
+    case "TOKEN": {
+      return { ...state, token: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -97,6 +100,7 @@ function MaterialUIControllerProvider({ children }) {
     playDashboard: false,
     machines: [],
     machinesSelect: [],
+    token: "",
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -139,6 +143,7 @@ const setDateMaster = (dispatch, value) => dispatch({ type: "DATEMASTER", value 
 const setPlayDashboard = (dispatch, value) => dispatch({ type: "PLAYDASHBOARD", value });
 const setMachines = (dispatch, value) => dispatch({ type: "MACHINES", value });
 const setMachinesSelect = (dispatch, value) => dispatch({ type: "MACHINESSELECT", value });
+const setToken = (dispatch, value) => dispatch({ type: "TOKEN", value });
 
 export {
   MaterialUIControllerProvider,
@@ -157,4 +162,5 @@ export {
   setPlayDashboard,
   setMachines,
   setMachinesSelect,
+  setToken,
 };

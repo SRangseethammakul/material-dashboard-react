@@ -19,7 +19,6 @@ import Grid from "@mui/material/Grid";
 import { instance, cancel } from "../../api";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import Select from "@mui/material/Select";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -27,13 +26,14 @@ import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import { useMaterialUIController, setMachines } from "context";
-
+import { redirect } from "react-router-dom";
 // Dashboard components
 import DataTable from "examples/Tables/DataTable";
 
 function Dashboard() {
   const [controller, dispatch] = useMaterialUIController();
-  const { dateMaster, machinesSelect } = controller;
+  const { dateMaster, machinesSelect, token } = controller;
+
   const [byWeek, setByWeek] = React.useState({});
   const [byHour, setByHour] = React.useState({});
   const [byMonth, setByMonth] = React.useState({});
