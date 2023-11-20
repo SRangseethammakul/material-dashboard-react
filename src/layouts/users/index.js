@@ -17,9 +17,12 @@ Coded by www.creative-tim.com
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import React from "react";
+import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
+import Modal from "react-modal";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -28,7 +31,7 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import { instance, cancel } from "../../api";
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
+import authorsTableData from "layouts/users/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 
 function Tables() {
@@ -36,6 +39,24 @@ function Tables() {
   const { columns: pColumns, rows: pRows } = projectsTableData();
   const [companyTable, setCompanyTable] = React.useState([]);
   const [userTable, setUsers] = React.useState([]);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const handleEdit = (data) => {
+    console.log(data);
+    // alert("handleEdit", data);
+    openModal();
+  };
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    subtitle.style.color = "#f00";
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
   const fetchData = () => {
     instance
       .get("/users/list")
@@ -79,7 +100,14 @@ function Tables() {
                   table={{
                     columns: [
                       { Header: "internal Id", accessor: "internalId", width: "25%" },
-                      { Header: "user name", accessor: "username", width: "30%" },
+                      { Header: "user name2", accessor: "username", width: "30%" },
+                      {
+                        Header: "Action",
+                        accessor: "action",
+                        Cell: (row) => (
+                          <MDButton onClick={(e) => handleEdit(row.row.original)}>Button</MDButton>
+                        ),
+                      },
                     ],
                     rows: userTable,
                   }}
