@@ -101,13 +101,6 @@ function Tables() {
                     columns: [
                       { Header: "internal Id", accessor: "internalId", width: "25%" },
                       { Header: "user name2", accessor: "username", width: "30%" },
-                      {
-                        Header: "Action",
-                        accessor: "action",
-                        Cell: (row) => (
-                          <MDButton onClick={(e) => handleEdit(row.row.original)}>Button</MDButton>
-                        ),
-                      },
                     ],
                     rows: userTable,
                   }}
