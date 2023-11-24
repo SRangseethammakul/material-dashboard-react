@@ -39,6 +39,7 @@ Coded by www.creative-tim.com
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Users from "layouts/users";
+import Machine from "layouts/machines";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
@@ -70,9 +71,17 @@ const routes = [
     type: "collapse",
     name: "Users",
     key: "users",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">person</Icon>,
     route: "/users",
     component: <Users />,
+  },
+  {
+    type: "collapse",
+    name: "Machine",
+    key: "machine",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/machine",
+    component: <Machine />,
   },
   // {
   //   type: "collapse",
