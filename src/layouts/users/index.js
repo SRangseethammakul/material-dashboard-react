@@ -217,9 +217,9 @@ function Tables() {
                 <>
                   {" "}
                   <MDBox mt={4} mb={1}>
-                    <MDButton color="danger" fullWidth>
+                    <MDTypography variant="h6" color="error" fullWidth verticalAlign="middle">
                       {error}
-                    </MDButton>
+                    </MDTypography>
                   </MDBox>
                 </>
               )}
@@ -289,7 +289,7 @@ function Tables() {
                 <>
                   {" "}
                   <MDBox mt={4} mb={1}>
-                    <MDTypography variant="h6" color="error" verticalAlign="middle">
+                    <MDTypography variant="h6" color="error" fullWidth verticalAlign="middle">
                       {error}
                     </MDTypography>
                   </MDBox>
