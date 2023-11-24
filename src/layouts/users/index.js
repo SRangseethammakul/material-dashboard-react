@@ -17,7 +17,8 @@ Coded by www.creative-tim.com
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import React from "react";
-import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
+import { useNavigate } from "react-router-dom";
+import { useMaterialUIController } from "context";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -46,6 +47,9 @@ const customStyles = {
   },
 };
 function Tables() {
+  const navigate = useNavigate();
+  const [controller, dispatch] = useMaterialUIController();
+  const { dateMaster, machinesSelect, token } = controller;
   const [companyTable, setCompanyTable] = React.useState([]);
   const [userTable, setUsers] = React.useState([]);
   const [companyForCreates, setCompanyForCreates] = React.useState([]);
@@ -76,11 +80,17 @@ function Tables() {
         throw new Error("set company");
       }
       instance
-        .post("/users/user/create", {
-          username: userName,
-          password: password,
-          companyId: company.internalId,
-        })
+        .post(
+          "/users/user/create",
+          {
+            username: userName,
+            password: password,
+            companyId: company.internalId,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .then(() => {
           setNewData(!newData);
           closeModal();
@@ -99,10 +109,16 @@ function Tables() {
         throw new Error("set Username");
       }
       instance
-        .post("/users/company/create", {
-          name: companyName,
-          description: companyDescription,
-        })
+        .post(
+          "/users/company/create",
+          {
+            name: companyName,
+            description: companyDescription,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .then(() => {
           setNewData(!newData);
           closeModalCompany();
@@ -123,13 +139,16 @@ function Tables() {
   }
   const fetchData = () => {
     instance
-      .get("/users/list")
+      .get("/users/list", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setCompanyTable(response.data.companies);
         setUsers(response.data.users);
         setCompanyForCreates(response.data.companyForCreate);
       })
       .catch((error) => {
+        navigate("/authentication/sign-in", { replace: true });
         console.error("Error fetching data:", error);
       });
   };

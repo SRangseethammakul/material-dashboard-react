@@ -17,6 +17,8 @@ Coded by www.creative-tim.com
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useMaterialUIController } from "context";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -45,6 +47,8 @@ const customStyles = {
   },
 };
 function Tables() {
+  const [controller, dispatch] = useMaterialUIController();
+  const { dateMaster, machinesSelect, token } = controller;
   const [machine, setMachine] = React.useState([]);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [companyForCreates, setCompanyForCreates] = React.useState([]);
@@ -55,6 +59,7 @@ function Tables() {
   const [printerStatus, setPrinterStatus] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [newData, setNewData] = React.useState(false);
+  const navigate = useNavigate();
   const newMachine = () => {
     setIsOpen(true);
   };
@@ -70,20 +75,30 @@ function Tables() {
         throw new Error("set printerStatus");
       }
       instance
-        .post("/machine/createMachine", {
-          companyId: company.id,
-          name: machineName,
-          location: machineLocation,
-          locationDetail: locationDetail,
-          printerStatus: printerStatus,
-        })
+        .post(
+          "/machine/createMachine",
+          {
+            companyId: company.id,
+            name: machineName,
+            location: machineLocation,
+            locationDetail: locationDetail,
+            printerStatus: printerStatus,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .then(() => {
           setNewData(!newData);
           closeModal();
         })
         .catch((error) => {
-          setError(error.response.data.error.message);
-          console.error("Error fetching data:", error.response.data.error.message);
+          if (error.response.status) {
+            navigate("/authentication/sign-in", { replace: true });
+          } else {
+            setError(error.response.data.error.message);
+            console.error("Error fetching data:", error.response.data.error.message);
+          }
         });
     } catch (error) {
       setError(error.message);
@@ -94,12 +109,15 @@ function Tables() {
   }
   const fetchData = () => {
     instance
-      .get("/machine")
+      .get("/machine", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setCompanyForCreates(response.data.companyForCreate);
         setMachine(response.data.machines);
       })
       .catch((error) => {
+        navigate("/authentication/sign-in", { replace: true });
         console.error("Error fetching data:", error);
       });
   };
@@ -203,7 +221,7 @@ function Tables() {
               </MDBox>
               <MDBox mt={4} mb={1}>
                 <MDButton variant="gradient" onClick={(e) => saveData()} color="info" fullWidth>
-                  Create User
+                  Create Machine
                 </MDButton>
               </MDBox>
               {error && (
@@ -238,7 +256,7 @@ function Tables() {
                 <Grid container>
                   <Grid xs={8}>
                     <MDTypography variant="h6" color="white">
-                      User Table
+                      Machine Table
                     </MDTypography>
                   </Grid>
                   <Grid>

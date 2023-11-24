@@ -31,11 +31,11 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import { useMaterialUIController, setMachines } from "context";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 // Dashboard components
 import DataTable from "examples/Tables/DataTable";
-import axios from "axios";
-
 function Dashboard() {
+  const navigate = useNavigate();
   const [controller, dispatch] = useMaterialUIController();
   const { dateMaster, machinesSelect, token } = controller;
   const [location, setLocation] = React.useState({});
@@ -50,6 +50,7 @@ function Dashboard() {
   const fetchData = () => {
     instance
       .get("/dashboard", {
+        headers: { Authorization: `Bearer ${token}` },
         params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd, machinesSelect },
       })
       .then((response) => {
@@ -63,6 +64,7 @@ function Dashboard() {
         setMasterTable(response.data.masterTable.dataRawTables);
       })
       .catch((error) => {
+        navigate("/authentication/sign-in", { replace: true });
         console.error("Error fetching data:", error);
       });
   };

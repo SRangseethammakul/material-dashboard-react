@@ -15,8 +15,10 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import React from "react";
+import { useMaterialUIController } from "context";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import { useNavigate } from "react-router-dom";
 import { instance, cancel } from "../../api";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -28,14 +30,20 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DataTable from "examples/Tables/DataTable";
 
 function Tables() {
+  const navigate = useNavigate();
+  const [controller, dispatch] = useMaterialUIController();
+  const { dateMaster, machinesSelect, token } = controller;
   const [masterTable, setMasterTable] = React.useState([]);
   const fetchData = () => {
     instance
-      .get("/transaction/getDeposit")
+      .get("/transaction/getDeposit", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setMasterTable(response.data);
       })
       .catch((error) => {
+        navigate("/authentication/sign-in", { replace: true });
         console.error("Error fetching data:", error);
       });
   };
