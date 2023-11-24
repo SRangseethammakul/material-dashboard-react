@@ -41,8 +41,8 @@ function Basic() {
     try {
       instance
         .post("/users/login", {
-          username: userName || "photobuddy.kh@gmail.com",
-          password: password || "Sk4kRlBxcXE=",
+          username,
+          password,
         })
         .then((response) => {
           setToken(dispatch, response.data.access_token);
@@ -75,7 +75,7 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 type="email"
-                value="photobuddy.kh@gmail.com"
+                value="act"
                 onChange={(e) => {
                   setUserName(e.target.value);
                 }}
@@ -86,7 +86,7 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                value="Sk4kRlBxcXE="
+                value="123123123"
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
