@@ -50,16 +50,19 @@ function Tables() {
   const [userTable, setUsers] = React.useState([]);
   const [companyForCreates, setCompanyForCreates] = React.useState([]);
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [modalIsOpenCompany, setIsOpenCompany] = React.useState(false);
   const [company, setCompany] = React.useState(null);
   const [userName, setUserName] = React.useState(null);
   const [password, setPassword] = React.useState(null);
+  const [companyName, setCompanyName] = React.useState(null);
+  const [companyDescription, setCompanyDescription] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [newData, setNewData] = React.useState(false);
-  function openModal() {
-    setIsOpen(true);
-  }
   const newUser = () => {
-    openModal();
+    setIsOpen(true);
+  };
+  const newCompany = () => {
+    setIsOpenCompany(true);
   };
   const saveData = () => {
     try {
@@ -79,8 +82,30 @@ function Tables() {
           companyId: company.internalId,
         })
         .then(() => {
-          setNewData(true);
+          setNewData(!newData);
           closeModal();
+        })
+        .catch((error) => {
+          setError(error.response.data.error.message);
+          console.error("Error fetching data:", error.response.data.error.message);
+        });
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+  const saveDataCompany = () => {
+    try {
+      if (!companyName) {
+        throw new Error("set Username");
+      }
+      instance
+        .post("/users/company/create", {
+          name: companyName,
+          description: companyDescription,
+        })
+        .then(() => {
+          setNewData(!newData);
+          closeModalCompany();
         })
         .catch((error) => {
           setError(error.response.data.error.message);
@@ -92,6 +117,9 @@ function Tables() {
   };
   function closeModal() {
     setIsOpen(false);
+  }
+  function closeModalCompany() {
+    setIsOpenCompany(false);
   }
   const fetchData = () => {
     instance
@@ -119,12 +147,7 @@ function Tables() {
   }, [newData]);
   return (
     <DashboardLayout>
-      <Modal
-        isOpen={modalIsOpen}
-        // onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-      >
+      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles}>
         <Card>
           <MDBox
             variant="gradient"
@@ -187,7 +210,7 @@ function Tables() {
               </MDBox>
               <MDBox mt={4} mb={1}>
                 <MDButton variant="gradient" onClick={(e) => saveData()} color="info" fullWidth>
-                  sign in
+                  Create User
                 </MDButton>
               </MDBox>
               {error && (
@@ -197,6 +220,78 @@ function Tables() {
                     <MDButton color="danger" fullWidth>
                       {error}
                     </MDButton>
+                  </MDBox>
+                </>
+              )}
+            </MDBox>
+          </MDBox>
+        </Card>
+      </Modal>
+      <Modal isOpen={modalIsOpenCompany} onRequestClose={closeModalCompany} style={customStyles}>
+        <Card>
+          <MDBox
+            variant="gradient"
+            bgColor="success"
+            borderRadius="lg"
+            coloredShadow="success"
+            mx={2}
+            mt={-3}
+            p={3}
+            mb={1}
+            textAlign="center"
+          >
+            <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+              Create New Company
+            </MDTypography>
+            <MDTypography display="block" variant="button" color="white" my={1}>
+              Enter new company name to create
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={4} pb={3} px={3}>
+            <MDBox component="form" role="form">
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="companyName"
+                  label="Company Name"
+                  variant="standard"
+                  onChange={(e) => {
+                    setError(null);
+                    setCompanyName(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="companyDescription"
+                  label="Description"
+                  variant="standard"
+                  onChange={(e) => {
+                    setError(null);
+                    setCompanyDescription(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mt={4} mb={1}>
+                <MDButton
+                  variant="gradient"
+                  onClick={(e) => saveDataCompany()}
+                  color="success"
+                  fullWidth
+                >
+                  Create New Company
+                </MDButton>
+              </MDBox>
+              {error && (
+                <>
+                  {" "}
+                  <MDBox mt={4} mb={1}>
+                    <MDTypography variant="h6" color="error" verticalAlign="middle">
+                      {error}
+                    </MDTypography>
                   </MDBox>
                 </>
               )}
@@ -227,7 +322,7 @@ function Tables() {
                   </Grid>
                   <Grid>
                     <Grid justifyContent="flex-end" alignItems="stretch">
-                      <MDButton onClick={(e) => newUser(location.id)}>New User</MDButton>
+                      <MDButton onClick={(e) => newUser()}>New User</MDButton>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -257,9 +352,18 @@ function Tables() {
                 borderRadius="lg"
                 coloredShadow="info"
               >
-                <MDTypography variant="h6" color="white">
-                  Company Table
-                </MDTypography>
+                <Grid container>
+                  <Grid xs={8}>
+                    <MDTypography variant="h6" color="white">
+                      Company Table
+                    </MDTypography>
+                  </Grid>
+                  <Grid>
+                    <Grid justifyContent="flex-end" alignItems="stretch">
+                      <MDButton onClick={(e) => newCompany()}>New Company</MDButton>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
