@@ -41,10 +41,11 @@ function Basic() {
     try {
       instance
         .post("/users/login", {
-          username,
+          username: userName,
           password,
         })
         .then((response) => {
+          console.log(response);
           setToken(dispatch, response.data.access_token);
           navigate("/dashboard", { replace: true });
         });
@@ -75,7 +76,6 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 type="email"
-                value="act"
                 onChange={(e) => {
                   setUserName(e.target.value);
                 }}
@@ -86,7 +86,6 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                value="123123123"
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
