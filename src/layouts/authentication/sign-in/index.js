@@ -53,6 +53,28 @@ function Basic() {
       console.log(error);
     }
   };
+  const checkProfile = () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      console.log(token.access_token);
+      instance
+        .get("/users/profile", {
+          headers: { Authorization: `Bearer ${token.access_token}` },
+        })
+        .then((response) => {
+          setToken(dispatch, token.access_token);
+          navigate("/dashboard", { replace: true });
+        });
+    } catch (error) {
+      saveData();
+    }
+  };
+  React.useEffect(() => {
+    checkProfile();
+    return () => {
+      cancel(); // This cancels the request when the component unmounts
+    };
+  }, []);
   return (
     <BasicLayout image={bgImage}>
       <Card>

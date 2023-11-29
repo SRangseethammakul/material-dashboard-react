@@ -193,7 +193,7 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="warning"
-                icon="assistant_photo"
+                icon="credit_card"
                 title="Fee"
                 count={sum.totalInvoiceAmountFee}
               />
