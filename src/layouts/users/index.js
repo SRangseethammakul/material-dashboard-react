@@ -57,7 +57,10 @@ function Tables() {
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [modalIsOpenCompany, setIsOpenCompany] = React.useState(false);
   const [modalIsOpenCompanyEdit, setIsOpenCompanyEdit] = React.useState(false);
+  const [modalIsOpenUserEdit, setIsOpenUserEdit] = React.useState(false);
   const [company, setCompany] = React.useState(null);
+  const [companyId, setCompanyId] = React.useState(null);
+  const [userId, setUserId] = React.useState(null);
   const [userName, setUserName] = React.useState(null);
   const [password, setPassword] = React.useState(null);
   const [companyName, setCompanyName] = React.useState(null);
@@ -67,9 +70,19 @@ function Tables() {
   const newUser = () => {
     setIsOpen(true);
   };
-  const handleEdit = (data) => {
+  const handleEditCompany = (data) => {
+    const { companyName, companyDescription, companyId } = data;
+    setCompanyName(companyName);
+    setCompanyId(companyId);
+    setCompanyDescription(companyDescription);
+    setIsOpenCompanyEdit(true);
+  };
+  const handleEditUser = (data) => {
     console.log(data);
-    const { printerStatus, name, location, locationDetail, id } = data;
+    const { username, internalId } = data;
+    setUserName(username);
+    setUserId(internalId);
+    setIsOpenUserEdit(true);
   };
   const newCompany = () => {
     setIsOpenCompany(true);
@@ -137,8 +150,63 @@ function Tables() {
       setError(error.message);
     }
   };
+  const updateDataCompany = () => {
+    try {
+      if (!companyName) {
+        throw new Error("set Username");
+      }
+      instance
+        .put(
+          `/users/company/update/${companyId}`,
+          {
+            name: companyName,
+            description: companyDescription,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then(() => {
+          setNewData(!newData);
+          closeModal();
+        })
+        .catch((error) => {
+          setError(error.response.data.error.message);
+          console.error("Error fetching data:", error.response.data.error.message);
+        });
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+  const updateDataUser = () => {
+    try {
+      instance
+        .put(
+          `/users/user/update/${userId}`,
+          {
+            username: userName,
+            password: password,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then(() => {
+          setNewData(!newData);
+          closeModal();
+        })
+        .catch((error) => {
+          setError(error.response.data.error.message);
+          console.error("Error fetching data:", error.response.data.error.message);
+        });
+    } catch (error) {
+      setError(error.message);
+    }
+  };
   function closeModal() {
     setIsOpen(false);
+    setIsOpenCompanyEdit(false);
+    setIsOpenUserEdit(false);
   }
   function closeModalCompany() {
     setIsOpenCompany(false);
@@ -324,11 +392,7 @@ function Tables() {
           </MDBox>
         </Card>
       </Modal>
-      <Modal
-        isOpen={modalIsOpenCompanyEdit}
-        onRequestClose={closeModalCompany}
-        style={customStyles}
-      >
+      <Modal isOpen={modalIsOpenCompanyEdit} onRequestClose={closeModal} style={customStyles}>
         <Card>
           <MDBox
             variant="gradient"
@@ -370,6 +434,7 @@ function Tables() {
                   id="companyDescription"
                   label="Description"
                   variant="standard"
+                  defaultValue={companyDescription}
                   onChange={(e) => {
                     setError(null);
                     setCompanyDescription(e.target.value);
@@ -380,11 +445,83 @@ function Tables() {
               <MDBox mt={4} mb={1}>
                 <MDButton
                   variant="gradient"
-                  onClick={(e) => saveDataCompany()}
+                  onClick={(e) => updateDataCompany()}
                   color="success"
                   fullWidth
                 >
-                  Create New Company
+                  Update Company
+                </MDButton>
+              </MDBox>
+              {error && (
+                <>
+                  {" "}
+                  <MDBox mt={4} mb={1}>
+                    <MDTypography variant="h6" color="error" fullWidth verticalAlign="middle">
+                      {error}
+                    </MDTypography>
+                  </MDBox>
+                </>
+              )}
+            </MDBox>
+          </MDBox>
+        </Card>
+      </Modal>
+      <Modal isOpen={modalIsOpenUserEdit} onRequestClose={closeModal} style={customStyles}>
+        <Card>
+          <MDBox
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="success"
+            mx={2}
+            mt={-3}
+            p={3}
+            mb={1}
+            textAlign="center"
+          >
+            <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+              Update User
+            </MDTypography>
+            <MDTypography display="block" variant="button" color="white" my={1}>
+              Enter username, password and company to update
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={4} pb={3} px={3}>
+            <MDBox component="form" role="form">
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="userName"
+                  label="User Name"
+                  variant="standard"
+                  defaultValue={userName}
+                  onChange={(e) => {
+                    setUserName(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="password"
+                  id="userPassword"
+                  label="Password"
+                  variant="standard"
+                  onChange={(e) => {
+                    setError(null);
+                    setPassword(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mt={4} mb={1}>
+                <MDButton
+                  variant="gradient"
+                  onClick={(e) => updateDataUser()}
+                  color="info"
+                  fullWidth
+                >
+                  Update User
                 </MDButton>
               </MDBox>
               {error && (
@@ -439,7 +576,7 @@ function Tables() {
                         Header: "Action",
                         accessor: "action",
                         Cell: (row) => (
-                          <MDButton onClick={(e) => handleEdit(row.row.original)}>
+                          <MDButton onClick={(e) => handleEditCompany(row.row.original)}>
                             {" "}
                             <Icon>edit</Icon>
                           </MDButton>
@@ -487,7 +624,7 @@ function Tables() {
                         Header: "Action",
                         accessor: "action",
                         Cell: (row) => (
-                          <MDButton onClick={(e) => handleEdit(row.row.original)}>
+                          <MDButton onClick={(e) => handleEditUser(row.row.original)}>
                             {" "}
                             <Icon>edit</Icon>
                           </MDButton>
