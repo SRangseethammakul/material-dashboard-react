@@ -131,11 +131,10 @@ function Dashboard() {
   }
   React.useEffect(() => {
     fetchData();
-
     return () => {
       cancel(); // This cancels the request when the component unmounts
     };
-  }, []);
+  }, [modalIsOpen, machinesSelect, dateMaster]);
   React.useEffect(() => {
     fetchData();
     return () => {
