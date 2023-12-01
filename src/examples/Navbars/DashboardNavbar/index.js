@@ -25,6 +25,8 @@ import "react-datepicker/dist/react-datepicker.css";
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
 import NavigationIcon from "@mui/icons-material/Navigation";
+import IconButton from "@mui/material/IconButton";
+import Icon from "@mui/material/Icon";
 // @material-ui core components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -39,7 +41,12 @@ import TextField from "@mui/material/TextField";
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 // Custom styles for DashboardNavbar
-import { navbar, navbarContainer, navbarRow } from "examples/Navbars/DashboardNavbar/styles";
+import {
+  navbar,
+  navbarContainer,
+  navbarRow,
+  navbarMobileMenu,
+} from "examples/Navbars/DashboardNavbar/styles";
 
 // Material Dashboard 2 React context
 import {
@@ -48,16 +55,18 @@ import {
   setDateMaster,
   setPlayDashboard,
   setMachines,
+  setMiniSidenav,
   setMachinesSelect,
 } from "context";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const [startDateGlobal, setstartDate] = useState(null);
   const [endDateGlobal, setEndDate] = useState(null);
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const [state, setState] = useState([]);
-  const { transparentNavbar, fixedNavbar, darkMode, machines } = controller;
+  const { transparentNavbar, fixedNavbar, darkMode, machines, miniSidenav } = controller;
   const route = useLocation().pathname.split("/").slice(1);
 
   const handlePlayDashboard = () => {
@@ -103,6 +112,18 @@ function DashboardNavbar({ absolute, light, isMini }) {
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
 
+  const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
+    color: () => {
+      let colorValue = light || darkMode ? white.main : dark.main;
+
+      if (transparentNavbar && !light) {
+        colorValue = darkMode ? rgba(text.main, 0.6) : text.main;
+      }
+
+      return colorValue;
+    },
+  });
+
   return (
     <AppBar
       position={absolute ? "absolute" : navbarType}
@@ -115,6 +136,17 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
+            <IconButton
+              size="small"
+              disableRipple
+              color="inherit"
+              sx={navbarMobileMenu}
+              onClick={handleMiniSidenav}
+            >
+              <Icon sx={iconsStyle} fontSize="medium">
+                {miniSidenav ? "menu_open" : "menu"}
+              </Icon>
+            </IconButton>
             <MDBox pr={1}>
               <Autocomplete
                 multiple
