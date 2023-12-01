@@ -71,6 +71,7 @@ function Dashboard() {
   const fetchDataWithMachine = () => {
     instance
       .get("/dashboard", {
+        headers: { Authorization: `Bearer ${token}` },
         params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd, machinesSelect },
       })
       .then((response) => {
