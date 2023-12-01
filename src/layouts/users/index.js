@@ -16,6 +16,7 @@ Coded by www.creative-tim.com
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import Icon from "@mui/material/Icon";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useMaterialUIController } from "context";
@@ -55,6 +56,7 @@ function Tables() {
   const [companyForCreates, setCompanyForCreates] = React.useState([]);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [modalIsOpenCompany, setIsOpenCompany] = React.useState(false);
+  const [modalIsOpenCompanyEdit, setIsOpenCompanyEdit] = React.useState(false);
   const [company, setCompany] = React.useState(null);
   const [userName, setUserName] = React.useState(null);
   const [password, setPassword] = React.useState(null);
@@ -64,6 +66,10 @@ function Tables() {
   const [newData, setNewData] = React.useState(false);
   const newUser = () => {
     setIsOpen(true);
+  };
+  const handleEdit = (data) => {
+    console.log(data);
+    const { printerStatus, name, location, locationDetail, id } = data;
   };
   const newCompany = () => {
     setIsOpenCompany(true);
@@ -318,47 +324,86 @@ function Tables() {
           </MDBox>
         </Card>
       </Modal>
+      <Modal
+        isOpen={modalIsOpenCompanyEdit}
+        onRequestClose={closeModalCompany}
+        style={customStyles}
+      >
+        <Card>
+          <MDBox
+            variant="gradient"
+            bgColor="success"
+            borderRadius="lg"
+            coloredShadow="success"
+            mx={2}
+            mt={-3}
+            p={3}
+            mb={1}
+            textAlign="center"
+          >
+            <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+              Update Company
+            </MDTypography>
+            <MDTypography display="block" variant="button" color="white" my={1}>
+              Enter company name to update
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={4} pb={3} px={3}>
+            <MDBox component="form" role="form">
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="companyName"
+                  label="Company Name"
+                  variant="standard"
+                  defaultValue={companyName}
+                  onChange={(e) => {
+                    setError(null);
+                    setCompanyName(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="companyDescription"
+                  label="Description"
+                  variant="standard"
+                  onChange={(e) => {
+                    setError(null);
+                    setCompanyDescription(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mt={4} mb={1}>
+                <MDButton
+                  variant="gradient"
+                  onClick={(e) => saveDataCompany()}
+                  color="success"
+                  fullWidth
+                >
+                  Create New Company
+                </MDButton>
+              </MDBox>
+              {error && (
+                <>
+                  {" "}
+                  <MDBox mt={4} mb={1}>
+                    <MDTypography variant="h6" color="error" fullWidth verticalAlign="middle">
+                      {error}
+                    </MDTypography>
+                  </MDBox>
+                </>
+              )}
+            </MDBox>
+          </MDBox>
+        </Card>
+      </Modal>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <Grid container>
-                  <Grid xs={8}>
-                    <MDTypography variant="h6" color="white">
-                      User Table
-                    </MDTypography>
-                  </Grid>
-                  <Grid>
-                    <Grid justifyContent="flex-end" alignItems="stretch">
-                      <MDButton onClick={(e) => newUser()}>New User</MDButton>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={{
-                    columns: [
-                      { Header: "internal Id", accessor: "internalId", width: "25%" },
-                      { Header: "user name2", accessor: "username", width: "30%" },
-                    ],
-                    rows: userTable,
-                  }}
-                />
-              </MDBox>
-            </Card>
-          </Grid>
           <Grid item xs={12}>
             <Card>
               <MDBox
@@ -390,8 +435,66 @@ function Tables() {
                     columns: [
                       { Header: "internal Id", accessor: "internalId", width: "25%" },
                       { Header: "company Name", accessor: "companyName", width: "30%" },
+                      {
+                        Header: "Action",
+                        accessor: "action",
+                        Cell: (row) => (
+                          <MDButton onClick={(e) => handleEdit(row.row.original)}>
+                            {" "}
+                            <Icon>edit</Icon>
+                          </MDButton>
+                        ),
+                      },
                     ],
                     rows: companyTable,
+                  }}
+                />
+              </MDBox>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <Grid container>
+                  <Grid xs={8}>
+                    <MDTypography variant="h6" color="white">
+                      User Table
+                    </MDTypography>
+                  </Grid>
+                  <Grid>
+                    <Grid justifyContent="flex-end" alignItems="stretch">
+                      <MDButton onClick={(e) => newUser()}>New User</MDButton>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </MDBox>
+              <MDBox pt={3}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "internal Id", accessor: "internalId", width: "25%" },
+                      { Header: "user name", accessor: "username", width: "30%" },
+                      {
+                        Header: "Action",
+                        accessor: "action",
+                        Cell: (row) => (
+                          <MDButton onClick={(e) => handleEdit(row.row.original)}>
+                            {" "}
+                            <Icon>edit</Icon>
+                          </MDButton>
+                        ),
+                      },
+                    ],
+                    rows: userTable,
                   }}
                 />
               </MDBox>

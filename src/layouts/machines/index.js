@@ -16,6 +16,7 @@ Coded by www.creative-tim.com
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import Icon from "@mui/material/Icon";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useMaterialUIController } from "context";
@@ -51,8 +52,10 @@ function Tables() {
   const { dateMaster, machinesSelect, token } = controller;
   const [machine, setMachine] = React.useState([]);
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [modalEditIsOpen, setEditIsOpen] = React.useState(false);
   const [companyForCreates, setCompanyForCreates] = React.useState([]);
   const [company, setCompany] = React.useState(null);
+  const [id, setId] = React.useState(null);
   const [machineName, setMachineName] = React.useState(null);
   const [machineLocation, setMachineLocation] = React.useState(null);
   const [locationDetail, setLocationDetail] = React.useState(null);
@@ -104,9 +107,50 @@ function Tables() {
       setError(error.message);
     }
   };
+  const updateData = () => {
+    try {
+      instance
+        .put(
+          `/machine/machine/${id}`,
+          {
+            name: machineName,
+            location: machineLocation,
+            locationDetail: locationDetail,
+            printerStatus: printerStatus,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then(() => {
+          setNewData(!newData);
+          setEditIsOpen(false);
+        })
+        .catch((error) => {
+          if (error.response.status) {
+            navigate("/authentication/sign-in", { replace: true });
+          } else {
+            setError(error.response.data.error.message);
+            console.error("Error fetching data:", error.response.data.error.message);
+          }
+        });
+    } catch (error) {
+      setError(error.message);
+    }
+  };
   function closeModal() {
     setIsOpen(false);
+    setEditIsOpen(false);
   }
+  const handleEdit = (data) => {
+    const { printerStatus, name, location, locationDetail, id } = data;
+    setMachineName(name);
+    setMachineLocation(location);
+    setLocationDetail(locationDetail);
+    setPrinterStatus(printerStatus);
+    setEditIsOpen(true);
+    setId(id);
+  };
   const fetchData = () => {
     instance
       .get("/machine", {
@@ -135,6 +179,99 @@ function Tables() {
   }, [newData]);
   return (
     <DashboardLayout>
+      <Modal isOpen={modalEditIsOpen} onRequestClose={closeModal} style={customStyles}>
+        <Card>
+          <MDBox
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="success"
+            mx={2}
+            mt={-3}
+            p={3}
+            mb={1}
+            textAlign="center"
+          >
+            <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+              Update Machine
+            </MDTypography>
+            <MDTypography display="block" variant="button" color="white" my={1}>
+              Update name, location and company to create
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={4} pb={3} px={3}>
+            <MDBox component="form" role="form">
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="name"
+                  label="Machine Name"
+                  defaultValue={machineName}
+                  variant="standard"
+                  onChange={(e) => {
+                    setMachineName(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="name"
+                  label="Machine Location"
+                  defaultValue={machineLocation}
+                  variant="standard"
+                  onChange={(e) => {
+                    setMachineLocation(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="locationDetail"
+                  label="Location Detail"
+                  variant="standard"
+                  defaultValue={locationDetail}
+                  onChange={(e) => {
+                    setLocationDetail(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="number"
+                  id="printerStatus"
+                  label="Printer Status"
+                  variant="standard"
+                  defaultValue={printerStatus}
+                  onChange={(e) => {
+                    setPrinterStatus(e.target.value);
+                  }}
+                  fullWidth
+                />
+              </MDBox>
+              <MDBox mt={4} mb={1}>
+                <MDButton variant="gradient" onClick={(e) => updateData()} color="info" fullWidth>
+                  Update Machine
+                </MDButton>
+              </MDBox>
+              {error && (
+                <>
+                  {" "}
+                  <MDBox mt={4} mb={1}>
+                    <MDTypography variant="h6" color="error" fullWidth verticalAlign="middle">
+                      {error}
+                    </MDTypography>
+                  </MDBox>
+                </>
+              )}
+            </MDBox>
+          </MDBox>
+        </Card>
+      </Modal>
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles}>
         <Card>
           <MDBox
@@ -273,6 +410,16 @@ function Tables() {
                       { Header: "Machine Name", accessor: "name", width: "25%" },
                       { Header: "Location", accessor: "location", width: "30%" },
                       { Header: "company name", accessor: "companyName", width: "30%" },
+                      {
+                        Header: "Action",
+                        accessor: "action",
+                        Cell: (row) => (
+                          <MDButton onClick={(e) => handleEdit(row.row.original)}>
+                            {" "}
+                            <Icon>edit</Icon>
+                          </MDButton>
+                        ),
+                      },
                     ],
                     rows: machine,
                   }}

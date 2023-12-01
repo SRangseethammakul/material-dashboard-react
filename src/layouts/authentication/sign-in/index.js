@@ -45,8 +45,9 @@ function Basic() {
           password,
         })
         .then((response) => {
-          console.log(response);
+          alert("eee");
           setToken(dispatch, response.data.access_token);
+          localStorage.setItem("token", JSON.stringify(response.data));
           navigate("/dashboard", { replace: true });
         });
     } catch (error) {
@@ -56,7 +57,7 @@ function Basic() {
   const checkProfile = () => {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
-      console.log(token.access_token);
+      console.log(token);
       instance
         .get("/users/profile", {
           headers: { Authorization: `Bearer ${token.access_token}` },

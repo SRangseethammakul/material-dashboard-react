@@ -102,7 +102,13 @@ function Dashboard() {
   };
   const saveData = (data) => {
     instance
-      .put(`/machine/${data}`, { printerStatus: document.getElementById("printerStatus").value })
+      .put(
+        `/machine/dashboard/${data}`,
+        {
+          printerStatus: document.getElementById("printerStatus").value,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
       .then(() => {
         setIsOpen(false);
       })
