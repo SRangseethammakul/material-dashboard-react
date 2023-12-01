@@ -47,6 +47,9 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
+let token = localStorage.getItem("token");
+token = JSON.parse(token);
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -66,14 +69,6 @@ const routes = [
     icon: <Icon fontSize="small">account_balance</Icon>,
     route: "/tables",
     component: <Tables />,
-  },
-  {
-    type: "collapse",
-    name: "Users",
-    key: "users",
-    icon: <Icon fontSize="small">people</Icon>,
-    route: "/users",
-    component: <Users />,
   },
   {
     type: "collapse",
@@ -116,5 +111,16 @@ const routes = [
     component: <SignIn />,
   },
 ];
+
+if (token && token.isAdmin) {
+  routes.push({
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">people</Icon>,
+    route: "/users",
+    component: <Users />,
+  });
+}
 
 export default routes;
