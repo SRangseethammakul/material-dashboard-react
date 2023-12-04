@@ -154,7 +154,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 options={machines}
                 disableCloseOnSelect
                 value={state}
-                getOptionLabel={(option) => option.location}
+                getOptionLabel={(option) => `${option.name} (${option.location})`}
                 getOptionSelected={(option, value) => option.id === value.id}
                 renderOption={(props, option, { selected }) => (
                   // eslint-disable-next-line react/jsx-props-no-spreading
@@ -165,7 +165,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                       style={{ marginRight: 8 }}
                       checked={selected}
                     />
-                    {option.location}
+                    {option.name} ({option.location})
                   </li>
                 )}
                 onChange={handleChange}

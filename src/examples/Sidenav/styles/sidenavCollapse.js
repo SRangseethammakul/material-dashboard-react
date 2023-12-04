@@ -74,10 +74,7 @@ function collapseIconBox(theme, ownerState) {
   return {
     minWidth: pxToRem(32),
     minHeight: pxToRem(32),
-    color:
-      (transparentSidenav && !darkMode && !active) || (whiteSidenav && !active)
-        ? dark.main
-        : white.main,
+    color: "#f46c4c",
     borderRadius: borderRadius.md,
     display: "grid",
     placeItems: "center",
@@ -93,7 +90,7 @@ function collapseIconBox(theme, ownerState) {
 }
 
 const collapseIcon = ({ palette: { white, gradients } }, { active }) => ({
-  color: active ? white.main : gradients.dark.state,
+  color: "#f46c4c",
 });
 
 function collapseText(theme, ownerState) {
@@ -120,6 +117,7 @@ function collapseText(theme, ownerState) {
       fontWeight: active ? fontWeightRegular : fontWeightLight,
       fontSize: size.sm,
       lineHeight: 0,
+      color: "#e87539",
     },
   };
 }
