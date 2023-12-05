@@ -135,24 +135,24 @@ function Dashboard() {
       cancel(); // This cancels the request when the component unmounts
     };
   }, [modalIsOpen, machinesSelect, dateMaster]);
-  React.useEffect(() => {
-    fetchData();
-    return () => {
-      cancel(); // This cancels the request when the component unmounts
-    };
-  }, [dateMaster]);
-  React.useEffect(() => {
-    fetchDataWithMachine();
-    return () => {
-      cancel(); // This cancels the request when the component unmounts
-    };
-  }, [machinesSelect]);
-  React.useEffect(() => {
-    fetchDataWithMachine();
-    return () => {
-      cancel(); // This cancels the request when the component unmounts
-    };
-  }, [modalIsOpen]);
+  // React.useEffect(() => {
+  //   fetchData();
+  //   return () => {
+  //     cancel(); // This cancels the request when the component unmounts
+  //   };
+  // }, [dateMaster]);
+  // React.useEffect(() => {
+  //   fetchDataWithMachine();
+  //   return () => {
+  //     cancel(); // This cancels the request when the component unmounts
+  //   };
+  // }, [machinesSelect]);
+  // React.useEffect(() => {
+  //   fetchDataWithMachine();
+  //   return () => {
+  //     cancel(); // This cancels the request when the component unmounts
+  //   };
+  // }, [modalIsOpen]);
   return (
     <DashboardLayout>
       <Modal

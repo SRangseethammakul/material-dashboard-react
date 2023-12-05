@@ -20,7 +20,6 @@ function collapseItem(theme, ownerState) {
   const { md } = boxShadows;
   const { borderRadius } = borders;
   const { pxToRem, rgba, linearGradient } = functions;
-
   return {
     background: active
       ? linearGradient(gradients[sidenavColor].main, gradients[sidenavColor].state)

@@ -38,6 +38,7 @@ function Tables() {
     instance
       .get("/transaction/getDeposit", {
         headers: { Authorization: `Bearer ${token}` },
+        params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd, machinesSelect },
       })
       .then((response) => {
         setMasterTable(response.data);
@@ -52,7 +53,7 @@ function Tables() {
     return () => {
       cancel(); // This cancels the request when the component unmounts
     };
-  }, []);
+  }, [machinesSelect, dateMaster]);
   return (
     <DashboardLayout>
       <DashboardNavbar />

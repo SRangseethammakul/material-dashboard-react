@@ -63,9 +63,12 @@ function Basic() {
         .then((response) => {
           setToken(dispatch, token.access_token);
           navigate("/dashboard", { replace: true });
+        })
+        .catch(() => {
+          setToken(dispatch, null);
         });
     } catch (error) {
-      saveData();
+      setToken(dispatch, null);
     }
   };
   React.useEffect(() => {
