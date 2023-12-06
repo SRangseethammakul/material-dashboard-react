@@ -20,10 +20,10 @@ function collapseItem(theme, ownerState) {
   const { md } = boxShadows;
   const { borderRadius } = borders;
   const { pxToRem, rgba, linearGradient } = functions;
+  const setColor1 = "#0c0c0c";
+  const setColor2 = "#191919";
   return {
-    background: active
-      ? linearGradient(gradients[sidenavColor].main, gradients[sidenavColor].state)
-      : transparent.main,
+    background: active ? linearGradient(setColor1, setColor2) : transparent.main,
     color:
       (transparentSidenav && !darkMode && !active) || (whiteSidenav && !active)
         ? dark.main

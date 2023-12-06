@@ -179,7 +179,7 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
+                icon="attach_money"
                 title="Income"
                 count={sum.totalInvoiceAmount}
               />
@@ -189,7 +189,7 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
+                icon="camera_roll"
                 title="Total Print"
                 count={count}
               />
@@ -209,7 +209,7 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="attach_money"
+                icon="savings"
                 title="Net Income"
                 count={sum.totalInvoiceAmountNet}
               />
