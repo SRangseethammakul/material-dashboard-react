@@ -110,14 +110,6 @@ const routes = [
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
-  {
-    type: "collapse",
-    name: "Sign Out",
-    key: "sign-out",
-    icon: <Icon fontSize="small">logout</Icon>,
-    route: "/authentication/sign-out",
-    component: <SignOut />,
-  },
 ];
 if (token && token.isAdmin) {
   routes.push({
@@ -129,5 +121,13 @@ if (token && token.isAdmin) {
     component: <Users />,
   });
 }
+routes.push({
+  type: "collapse",
+  name: "Sign Out",
+  key: "sign-out",
+  icon: <Icon fontSize="small">logout</Icon>,
+  route: "/authentication/sign-out",
+  component: <SignOut />,
+});
 
 export default routes;
