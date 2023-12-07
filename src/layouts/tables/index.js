@@ -16,6 +16,7 @@ Coded by www.creative-tim.com
 // @mui material components
 import React from "react";
 import { useMaterialUIController } from "context";
+import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,7 @@ function Tables() {
   const [controller, dispatch] = useMaterialUIController();
   const { dateMaster, machinesSelect, token } = controller;
   const [masterTable, setMasterTable] = React.useState([]);
+  const [masterGetAmount, setMasterGetAmount] = React.useState({});
   const fetchData = () => {
     instance
       .get("/transaction/getDeposit", {
@@ -41,7 +43,8 @@ function Tables() {
         params: { startDate: dateMaster.dateStart, endDate: dateMaster.dateEnd, machinesSelect },
       })
       .then((response) => {
-        setMasterTable(response.data);
+        setMasterTable(response.data.results);
+        setMasterGetAmount(response.data.getAmount);
       })
       .catch((error) => {
         navigate("/authentication/sign-in", { replace: true });
@@ -59,6 +62,35 @@ function Tables() {
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
+          <Grid item xs={12} md={6} lg={4}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                icon="attach_money"
+                title="Income"
+                count={masterGetAmount.totalInvoiceAmount}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="warning"
+                icon="credit_card"
+                title="Fee"
+                count={masterGetAmount.totalInvoiceAmountFee}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="dark"
+                icon="savings"
+                title="Net Income"
+                count={masterGetAmount.totalInvoiceAmountNet}
+              />
+            </MDBox>
+          </Grid>
           <Grid item xs={12}>
             <Card>
               <MDBox

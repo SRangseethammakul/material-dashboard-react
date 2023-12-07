@@ -20,8 +20,8 @@ function collapseItem(theme, ownerState) {
   const { md } = boxShadows;
   const { borderRadius } = borders;
   const { pxToRem, rgba, linearGradient } = functions;
-  const setColor1 = "#0c0c0c";
-  const setColor2 = "#191919";
+  const setColor1 = "#2E1802";
+  const setColor2 = "#02182e";
   return {
     background: active ? linearGradient(setColor1, setColor2) : transparent.main,
     color:
