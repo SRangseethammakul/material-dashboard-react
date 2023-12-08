@@ -20,6 +20,7 @@ import { useLocation } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import moment from "moment";
 import Fab from "@mui/material/Fab";
+import Grid from "@mui/material/Grid";
 import "react-datepicker/dist/react-datepicker.css";
 
 // prop-types is a library for typechecking of props.
@@ -136,73 +137,98 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <IconButton
-              size="small"
-              disableRipple
-              color="inherit"
-              sx={navbarMobileMenu}
-              onClick={handleMiniSidenav}
-            >
-              <Icon sx={iconsStyle} fontSize="medium">
-                {miniSidenav ? "menu_open" : "menu"}
-              </Icon>
-            </IconButton>
-            <MDBox pr={1}>
-              <Autocomplete
-                multiple
-                id="checkboxes-tags-demo"
-                options={machines}
-                disableCloseOnSelect
-                value={state}
-                getOptionLabel={(option) => `${option.name} (${option.location})`}
-                getOptionSelected={(option, value) => option.id === value.id}
-                renderOption={(props, option, { selected }) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={selected}
-                    />
-                    {option.name} ({option.location})
-                  </li>
-                )}
-                onChange={handleChange}
-                style={{ width: 500 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Checkboxes" placeholder="Favorites" />
-                )}
-              />
-            </MDBox>
-            <MDBox pr={1}>
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                type="date"
-                id="outlinedStartDate"
-                label="Start Date"
-                onChange={(event) => {
-                  setstartDate(event.target.value);
-                }}
-                defaultValue={startDateGlobal}
-              />
-            </MDBox>
-            <MDBox pr={1}>
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                type="date"
-                id="outlinedEndDate"
-                label="End Date"
-                onChange={(event) => {
-                  setEndDate(event.target.value);
-                }}
-                defaultValue={endDateGlobal}
-              />
-            </MDBox>
-            <Fab variant="extended" onClick={handlePlayDashboard}>
-              <NavigationIcon sx={{ mr: 1 }} />
-              Play
-            </Fab>
+            <Grid container spacing={3}>
+              <IconButton
+                size="small"
+                disableRipple
+                color="inherit"
+                sx={navbarMobileMenu}
+                onClick={handleMiniSidenav}
+              >
+                <Icon sx={iconsStyle} fontSize="medium">
+                  {miniSidenav ? "menu_open" : "menu"}
+                </Icon>
+              </IconButton>
+              <Grid item xs={12} md={12} lg={5}>
+                <MDBox pr={1}>
+                  <Autocomplete
+                    multiple
+                    limitTags={2}
+                    id="multiple-limit-tags"
+                    options={machines}
+                    disableCloseOnSelect
+                    isOptionEqualToValue={(option, value) =>
+                      value === undefined || value === "" || option.id === value.id
+                    }
+                    onChange={handleChange}
+                    getOptionLabel={(option) => option.nameWithLocation}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Machines" placeholder="Machines" />
+                    )}
+                  />
+                  {/* <Autocomplete
+                    multiple
+                    id="checkboxes-tags-demo"
+                    options={machines}
+                    disableCloseOnSelect
+                    value={state}
+                    getOptionLabel={(option) => option.nameWithLocation}
+                    renderOption={(props, option, { selected }) => (
+                      // eslint-disable-next-line react/jsx-props-no-spreading
+                      <li {...props}>
+                        <Checkbox
+                          icon={icon}
+                          checkedIcon={checkedIcon}
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.nameWithLocation}
+                      </li>
+                    )}
+                    onChange={handleChange}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Checkboxes" placeholder="Favorites" />
+                    )}
+                  /> */}
+                </MDBox>
+              </Grid>
+              <Grid item xs={12} md={12} lg={3}>
+                <MDBox pr={1}>
+                  <TextField
+                    InputLabelProps={{ shrink: true }}
+                    type="date"
+                    id="outlinedStartDate"
+                    label="Start Date"
+                    onChange={(event) => {
+                      setstartDate(event.target.value);
+                    }}
+                    defaultValue={startDateGlobal}
+                  />
+                </MDBox>
+              </Grid>
+
+              <Grid item xs={12} md={12} lg={3}>
+                <MDBox pr={1}>
+                  <TextField
+                    InputLabelProps={{ shrink: true }}
+                    type="date"
+                    id="outlinedEndDate"
+                    label="End Date"
+                    onChange={(event) => {
+                      setEndDate(event.target.value);
+                    }}
+                    defaultValue={endDateGlobal}
+                  />
+                </MDBox>
+              </Grid>
+
+              <Grid item xs={12} md={12} lg={1}>
+                <Fab variant="extended" onClick={handlePlayDashboard}>
+                  <NavigationIcon />
+                  Play
+                </Fab>
+              </Grid>
+            </Grid>
           </MDBox>
         )}
       </Toolbar>
