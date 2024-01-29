@@ -111,7 +111,7 @@ const routes = [
     component: <SignIn />,
   },
 ];
-if (token && token.isAdmin) {
+if (1) {
   routes.push({
     type: "collapse",
     name: "Users",
